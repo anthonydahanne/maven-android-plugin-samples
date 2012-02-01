@@ -52,7 +52,7 @@
                         </sdk>
                         <emulator>
                             <avd>23</avd>
-                            <wait>10000</wait>
+                            <wait>60000</wait>
                             <!--<options>-no-skin</options>-->
                         </emulator>
                         <zipalign>
