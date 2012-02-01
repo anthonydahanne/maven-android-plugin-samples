@@ -16,15 +16,22 @@
 
 package com.simpligility.android.morseflash;
 
+import android.app.Instrumentation;
 import android.test.ActivityInstrumentationTestCase;
 import android.test.ActivityInstrumentationTestCase2;
+import android.test.suitebuilder.annotation.MediumTest;
+import android.widget.Button;
 
 /**
  * Make sure that the main launcher activity opens up properly, which will be
  * verified by {@link ActivityInstrumentationTestCase#testActivityTestCaseSetUpProperly}.
  */
 public class ConfigureMorseActivityTest extends ActivityInstrumentationTestCase2<ConfigureMorseActivity> {
-
+    public boolean setup = false;
+    private static final String TAG = "StartTests";
+    ConfigureMorseActivity mActivity = null;
+    Instrumentation mInst = null;
+    private Button enterButton;
     /**
      * The first constructor parameter must refer to the package identifier of the
      * package hosting the activity to be launched, which is specified in the AndroidManifest.xml
@@ -34,5 +41,39 @@ public class ConfigureMorseActivityTest extends ActivityInstrumentationTestCase2
     public ConfigureMorseActivityTest() {
         super("com.simpligility.android.morseflash", ConfigureMorseActivity.class);
     }
+    
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        final ConfigureMorseActivity a = getActivity();
+        // ensure a valid handle to the activity has been returned
+        assertNotNull(a);
+        enterButton = (Button) a.findViewById(R.id.morse);
+    }
+    
+    @MediumTest
+    public void testPressingEnterButton()  {
+        // Give right button focus by having it request focus.  We post it
+        // to the UI thread because we are not running on the same thread, and
+        // any direct api calls that change state must be made from the UI thread.
+        // This is in contrast to instrumentation calls that send events that are
+        // processed through the framework and eventually find their way to
+        // affecting the ui thread.
+        getActivity().runOnUiThread(new Runnable() {
+            public void run() {
+                enterButton.requestFocus();
+            }
+        });
+        // wait for the request to go through
+        getInstrumentation().waitForIdleSync();
+
+        assertTrue(enterButton.isFocused());
+        
+        
+
+//        sendKeys(KeyEvent.KEYCODE_DPAD_LEFT);
+//        assertTrue("center button should be focused", mCenterButton.isFocused());
+    }
+    
 
 }
